@@ -1,11 +1,6 @@
-# -*- coding: utf-8 -*-
-
 import argparse
 from reddit import Reddit
 from spotify import Spotify
-from sets import Set
-
-import sys
 
 class Entity:
     def __init__(self, reddit_title):
