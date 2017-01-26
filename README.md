@@ -5,7 +5,7 @@ A python script to update Spotify playlists with top threads from /r/listentothi
 ### Usage
 
 ```
-usage: main.py [-h] --subreddit SUBREDDIT --period {week,all,year,day,month}
+usage: listentothis.py [-h] --subreddit SUBREDDIT --period {week,all,year,day,month}
                [--limit LIMIT] --playlist-id PLAYLIST_ID --spotify-client-id
                SPOTIFY_CLIENT_ID --spotify-client-secret SPOTIFY_CLIENT_SECRET
                --refresh-token-file REFRESH_TOKEN_FILE
@@ -37,7 +37,7 @@ optional arguments:
   Example command to update a playlist with top Weekly tracks:
   
   ```
-  python main.py \
+  python listentothis.py \
     # /r/listentothis subreddit
     --subreddit listentothis \
     # weekly top threads
