@@ -4,8 +4,8 @@ A python script to update Spotify playlists with top threads from /r/listentothi
 
 ### Playlists
 
-(/r/listentothis Weekly Top Tracks)[https://open.spotify.com/user/1244096057/playlist/6hUq8JLq7sysh2vVrK4SjP]
-(/r/listentothis Monthly Top Tracks)[https://open.spotify.com/user/1244096057/playlist/2f1Ioxhg8evQ6TGVVVPT6j]
+[/r/listentothis Weekly Top Tracks](https://open.spotify.com/user/1244096057/playlist/6hUq8JLq7sysh2vVrK4SjP)
+[/r/listentothis Monthly Top Tracks](https://open.spotify.com/user/1244096057/playlist/2f1Ioxhg8evQ6TGVVVPT6j)
 
 ### Setup
 
