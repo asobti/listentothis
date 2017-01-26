@@ -2,6 +2,21 @@
 
 A python script to update Spotify playlists with top threads from /r/listentothis
 
+### Setup
+
+```
+# Clone the repo
+git clone git@github.com:asobti/listentothis.git
+cd listentothis
+
+# Create a [virtualenv](https://virtualenv.pypa.io/en/stable/)
+virtualenv env
+source env/bin/activate
+
+# install requirements
+pip install -r requirements.txt
+```
+
 ### Usage
 
 ```
@@ -37,7 +52,7 @@ optional arguments:
   Example command to update a playlist with top Weekly tracks:
   
   ```
-  python listentothis.py \
+  ./listentothis.py \
     # /r/listentothis subreddit
     --subreddit listentothis \
     # weekly top threads
@@ -55,3 +70,7 @@ optional arguments:
     # At least 50% of reddit threads should conver to Spotify tracks
     --search-threshold 0.5
  ```
+
+### Spotify Intructions
+
+To get a Spotify client id, client secret and refresh token, follow instructions at [Spotify Web API Tutorial](https://developer.spotify.com/web-api/tutorial/)
