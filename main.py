@@ -1,6 +1,7 @@
 import argparse
 from reddit import Reddit
 from spotify import Spotify
+from sets import Set
 import sys
 
 class Entity:
@@ -16,10 +17,10 @@ class Entity:
                     self.spotify_track
                 )
 def info(msg):
-    print '[INFO ] {}'.format(msg)
+    print '[INFO ] {}'.format(str(msg).encode('utf-8'))
 
 def error(msg):
-    print '[ERROR] {}'.format(msg)
+    print '[ERROR] {}'.format(str(msg).encode('utf-8'))
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Add subreddit top tracks to a Spotify playlist')
@@ -40,6 +41,8 @@ def parse_args():
                         help='Path to file with refresh token')
     parser.add_argument('--search-threshold', dest='search_threshold', type=float, default=0.5,
                         help='Fraction of reddit threads that must convert to Spotify tracks in order to proceed')
+    parser.add_argument('--dry-run', dest='dry_run', action='store_true', default=False,
+                        help='Do a dry run - Spotify playlists are not modified')
 
     return parser.parse_args()
 
@@ -105,26 +108,26 @@ def main():
             error(e)
             error('Skipping...')
 
-    tracks_found = [entity.spotify_track for entity in entities if entity.spotify_track is not None]
+    # list to Set to list - done to dedupe
+    tracks_found = list(Set([entity.spotify_track for entity in entities if entity.spotify_track is not None]))
     info('Found {} Spotify tracks'.format(len(tracks_found)))
 
     if not (float(len(tracks_found)) / len(entities)) > options.search_threshold:
         error('Search of Spotify tracks under threshold of {}'.format(options.search_threshold))
         return 1
 
-    try:
-        info('Removing existing tracks from playlist')
-        s.clear_playlist(options.playlist_id)
-        info('Adding {} new tracks to playlist'.format(len(tracks_found)))
-        s.add_tracks_to_playlist(options.playlist_id, tracks_found)
-    except Exception as e:
-        error(e)
-        return 1
+    if options.dry_run == False:
+        try:
+            info('Removing existing tracks from playlist')
+            s.clear_playlist(options.playlist_id)
+            info('Adding {} new tracks to playlist'.format(len(tracks_found)))
+            s.add_tracks_to_playlist(options.playlist_id, tracks_found)
+        except Exception as e:
+            error(e)
+            return 1
 
     info('Run completed successfully')
     return 0
 
 if __name__ == "__main__":
     sys.exit(main()) 
-
-    

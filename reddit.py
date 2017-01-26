@@ -33,4 +33,3 @@ class Reddit:
 
         if not r.raise_for_status():
             return r.json()
-

@@ -46,7 +46,7 @@ class Spotify:
 
     def search_track(self, query):
         params = {
-            'q': query,
+            'q': query.encode('utf-8'),
             'type': 'track',
             'limit': 1
         }
@@ -90,7 +90,7 @@ class Spotify:
             raise SpotifyException('No tracks to add to playlist')
 
         payload = { 'uris': uris }
-        
+
         user_id = self.__get_user_id()
         endpoint = 'users/{}/playlists/{}/tracks'.format(user_id, playlist_id)
         url = '{}/{}/{}'.format(Spotify.ApiBaseUrl, Spotify.ApiVersion, endpoint)
