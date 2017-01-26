@@ -1,6 +1,7 @@
 import argparse
 from reddit import Reddit
 from spotify import Spotify
+import sys
 
 class Entity:
     def __init__(self, reddit_title):
@@ -14,7 +15,11 @@ class Entity:
                     self.search_term.encode('utf-8') if self.search_term else 'None',
                     self.spotify_track
                 )
+def info(msg):
+    print '[INFO ] {}'.format(msg)
 
+def error(msg):
+    print '[ERROR] {}'.format(msg)
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Add subreddit top tracks to a Spotify playlist')
@@ -25,18 +30,16 @@ def parse_args():
                         help='The time period for top reddit threads')
     parser.add_argument('--limit', dest='limit', type=int, default=25,
                         help='Number of threads to retreive')
-    parser.add_argument('--refresh-token', dest='refresh_token', required=True,
-                        help='Spotify API refresh token')
     parser.add_argument('--playlist-id', dest='playlist_id', required=True,
                         help='ID of Spotify Playlist to add tracks to')
-    parser.add_argument('--append-to-playlist', dest='append_to_playlist', action='store_true',
-                        help='When set, tracks will be added to the playlist in addition to existing tracks')
     parser.add_argument('--spotify-client-id', dest='spotify_client_id', required=True,
                         help='Spotify application client ID')
     parser.add_argument('--spotify-client-secret', dest='spotify_client_secret', required=True,
                         help='Spotify application client secret')
     parser.add_argument('--refresh-token-file', dest='refresh_token_file', required=True,
                         help='Path to file with refresh token')
+    parser.add_argument('--search-threshold', dest='search_threshold', type=float, default=0.5,
+                        help='Fraction of reddit threads that must convert to Spotify tracks in order to proceed')
 
     return parser.parse_args()
 
@@ -69,30 +72,59 @@ def read_refresh_token(path):
     with open(path, 'r') as f:
         return f.read()
 
-if __name__ == "__main__":
+def main():
     options = parse_args()
 
     r = Reddit(options.subreddit)
-    top_titles = r.top(options.period, options.limit)
 
+    info('Fecthing threads from Reddit')
+    top_titles = r.top(options.period, options.limit)
     entities = [Entity(title) for title in top_titles]
+    info('Found {} threads'.format(len(entities)))
     
     for entity in entities:
         try:
             entity.search_term = search_term_from_title(entity.reddit_title)
         except:
-            print 'Failed to convert Reddit title "{}" to a search term'.format(title)
+            error('Failed to convert Reddit title "{}" to a search term'.format(title))
 
     refresh_token = read_refresh_token(options.refresh_token_file)
-    s = Spotify(options.spotify_client_id, options.spotify_client_secret, refresh_token)
 
+    try:
+        s = Spotify(options.spotify_client_id, options.spotify_client_secret, refresh_token)
+    except Exception as e:
+        error('Failed to create Spotify agent')
+        error(e)
+        return 1
+
+    info('Searching Spotify for tracks')
     for entity in entities:
         try:
             entity.spotify_track = s.search_track(entity.search_term)
         except Exception as e:
-            print e
+            error(e)
+            error('Skipping...')
 
-    for entity in entities:
-        print entity
+    tracks_found = [entity.spotify_track for entity in entities if entity.spotify_track is not None]
+    info('Found {} Spotify tracks'.format(len(tracks_found)))
+
+    if not (float(len(tracks_found)) / len(entities)) > options.search_threshold:
+        error('Search of Spotify tracks under threshold of {}'.format(options.search_threshold))
+        return 1
+
+    try:
+        info('Removing existing tracks from playlist')
+        s.clear_playlist(options.playlist_id)
+        info('Adding {} new tracks to playlist'.format(len(tracks_found)))
+        s.add_tracks_to_playlist(options.playlist_id, tracks_found)
+    except Exception as e:
+        error(e)
+        return 1
+
+    info('Run completed successfully')
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(main()) 
 
     
