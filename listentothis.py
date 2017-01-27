@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import argparse
 from reddit import Reddit
 from spotify import Spotify
