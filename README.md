@@ -67,9 +67,9 @@ optional arguments:
     # Spotify playlist id
     --playlist-id 2f1Ioxhg8evQ6TGVVVPT6j \
     # Spotify app Client ID
-    --spotify-client-id d16c968bff5c4ba4909d6a083e355ff9 \
+    --spotify-client-id your-client-id \
     # Spotify app Client Secret
-    --spotify-client-secret 3cfea8f35fe04afb98b3eb1893420ef0 \
+    --spotify-client-secret your-client-secret \
     # Path to file containing the refresh token
     --refresh-token-file refresh_token \
     # At least 50% of reddit threads should conver to Spotify tracks
