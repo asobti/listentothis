@@ -3,7 +3,6 @@
 import argparse
 from reddit import Reddit
 from spotify import Spotify
-from sets import Set
 import sys
 
 class Entity:
@@ -111,7 +110,7 @@ def main():
             error('Skipping...')
 
     # list to Set to list - done to dedupe
-    tracks_found = list(Set([entity.spotify_track for entity in entities if entity.spotify_track is not None]))
+    tracks_found = list(set([entity.spotify_track for entity in entities if entity.spotify_track is not None]))
     info('Found {} Spotify tracks'.format(len(tracks_found)))
 
     if not (float(len(tracks_found)) / len(entities)) > options.search_threshold:

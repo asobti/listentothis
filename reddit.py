@@ -1,11 +1,10 @@
-from sets import Set
 import requests
 
 class RedditException(Exception):
     pass
 
 class Reddit:
-    TimePeriods = Set(['day', 'week', 'month', 'year', 'all'])
+    TimePeriods = set(['day', 'week', 'month', 'year', 'all'])
     BaseUrl = 'https://www.reddit.com'
     ThreadType = "t3"
 
