@@ -5,6 +5,7 @@ from reddit import Reddit
 from spotify import Spotify
 import sys
 
+
 class Entity:
     def __init__(self, reddit_title):
         self.reddit_title = reddit_title
@@ -17,11 +18,15 @@ class Entity:
                     self.search_term.encode('utf-8') if self.search_term else 'None',
                     self.spotify_track
                 )
+
+
 def info(msg):
     print '[INFO ] {}'.format(str(msg).encode('utf-8'))
 
+
 def error(msg):
     print '[ERROR] {}'.format(str(msg).encode('utf-8'))
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Add subreddit top tracks to a Spotify playlist')
@@ -46,6 +51,7 @@ def parse_args():
                         help='Do a dry run - Spotify playlists are not modified')
 
     return parser.parse_args()
+
 
 # Convert a Reddit title to a Spotify search term
 # TODO: This could be improved by using a regular expression
@@ -72,9 +78,11 @@ def search_term_from_title(title):
     else:
         raise Exception('search_term_conversion_fail exception')
 
+
 def read_refresh_token(path):
     with open(path, 'r') as f:
         return f.read()
+
 
 def main():
     options = parse_args()
@@ -89,7 +97,7 @@ def main():
     for entity in entities:
         try:
             entity.search_term = search_term_from_title(entity.reddit_title)
-        except:
+        except Exception:
             error('Failed to convert Reddit title "{}" to a search term'.format(title))
 
     refresh_token = read_refresh_token(options.refresh_token_file)
@@ -117,7 +125,7 @@ def main():
         error('Search of Spotify tracks under threshold of {}'.format(options.search_threshold))
         return 1
 
-    if options.dry_run == False:
+    if not options.dry_run:
         try:
             info('Removing existing tracks from playlist')
             s.clear_playlist(options.playlist_id)
@@ -129,6 +137,7 @@ def main():
 
     info('Run completed successfully')
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main()) 

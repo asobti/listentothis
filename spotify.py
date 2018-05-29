@@ -1,7 +1,9 @@
 import requests
 
+
 class SpotifyException(Exception):
     pass
+
 
 class Spotify:
     ApiBaseUrl = 'https://api.spotify.com'
@@ -75,8 +77,8 @@ class Spotify:
         if len(current_playlist_track_uris) == 0:
             return
 
-        tracks = [ { "uri": track_uri } for track_uri in current_playlist_track_uris ]
-        payload = { 'tracks': tracks }
+        tracks = [{"uri": track_uri} for track_uri in current_playlist_track_uris]
+        payload = {'tracks': tracks}
 
         user_id = self.__get_user_id()
         endpoint = 'users/{}/playlists/{}/tracks'.format(user_id, playlist_id)
@@ -89,7 +91,7 @@ class Spotify:
         if len(uris) == 0:
             raise SpotifyException('No tracks to add to playlist')
 
-        payload = { 'uris': uris }
+        payload = {'uris': uris}
 
         user_id = self.__get_user_id()
         endpoint = 'users/{}/playlists/{}/tracks'.format(user_id, playlist_id)
