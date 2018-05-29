@@ -1,3 +1,4 @@
 env/
 *.pyc
 refresh_token
+.idea/
